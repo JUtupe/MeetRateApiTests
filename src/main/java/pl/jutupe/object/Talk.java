@@ -18,6 +18,7 @@ public class Talk {
         object.put("date", date);
 
     }
+
     public JSONObject getObject() {
         return object;
     }
