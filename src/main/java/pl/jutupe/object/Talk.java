@@ -8,7 +8,7 @@ public class Talk {
 
     private JSONObject object;
     private String title;
-    private Date date
+    private Date date;
 
     public Talk() throws JSONException {
         object = new JSONObject();
