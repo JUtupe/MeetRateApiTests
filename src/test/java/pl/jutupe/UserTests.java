@@ -14,10 +14,6 @@ import static io.restassured.RestAssured.*;
 
 public class UserTests extends FunctionalTest {
 
-    public void g(){
-
-    }
-
     @Test
     public void testValidPostUserSpeaker() throws JSONException {
         RequestSpecification request = RestAssured.given();

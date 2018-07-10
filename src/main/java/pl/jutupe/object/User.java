@@ -26,24 +26,12 @@ public class User {
         return object;
     }
 
-    public void setObject(JSONObject object) {
-        this.object = object;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @Override

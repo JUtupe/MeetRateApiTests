@@ -23,7 +23,7 @@ public class FunctionalTest {
                 .then().extract().cookie("connect.sid");
     }
 
-    public static JsonPath createUser() throws JSONException {
+    public static JsonPath createSpeaker() throws JSONException {
         RequestSpecification request = RestAssured.given();
 
         User user = new User(UserType.SPEAKER);
@@ -35,5 +35,22 @@ public class FunctionalTest {
         Response response = request.post("v1/user");
         response.getBody().prettyPrint();
         return response.jsonPath();
+    }
+
+    public static String createAdminCookie() throws JSONException {
+        RequestSpecification request = RestAssured.given();
+
+        User user = new User(UserType.SPEAKER);
+
+        request.header("Content-Type", "application/json")
+                .body(user.toString())
+                .cookie("connect.sid", ADMIN_SESSION_COOKIE);
+
+        Response response = request.post("v1/user");
+        response.getBody().prettyPrint();
+
+        return given().header("email", user.getEmail()).header("password_hash", response.jsonPath().get("password_hash")).
+                when().get("v1/login")
+                .then().extract().cookie("connect.sid");
     }
 }
