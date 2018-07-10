@@ -19,6 +19,7 @@ public class Talk {
 
     }
 
+
     public JSONObject getObject() {
         return object;
     }
