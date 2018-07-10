@@ -1,7 +1,5 @@
 package pl.jutupe;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONException;
@@ -11,13 +9,12 @@ import org.junit.Test;
 import pl.jutupe.object.Date;
 import pl.jutupe.object.Location;
 
+import static io.restassured.RestAssured.given;
+
 public class EventTests extends FunctionalTest {
-
-
 
     @Test
     public void testPostEvent() throws JSONException {
-        RequestSpecification request = RestAssured.given();
         String adminSessionCookie = createAdminCookie();
 
         String name = RandomStringUtils.randomAlphabetic(8);
@@ -31,14 +28,9 @@ public class EventTests extends FunctionalTest {
         object.put("location", new Location().toString());
         object.put("info", info);
 
-        System.out.println(object.toString());
-
-        request.header("Content-Type", "application/json")
-                .body(object.toString())
-                .cookie("connect.sid", adminSessionCookie);
-
-        Response response = request.post("v1/event");
-
+        response = given().header("Content-Type", "application/json")
+                .body(object.toString()).log().all()
+                .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
         Assert.assertEquals(201, response.getStatusCode());
     }
