@@ -17,9 +17,24 @@ public class Talk {
         object.put("eventId", eventId);
         object.put("title", title);
         object.put("date", date);
-
     }
 
+    public Talk(String eventId, String title) throws JSONException {
+        object = new JSONObject();
+
+        object.put("eventId", eventId);
+        object.put("title", title);
+        object.put("date", date);
+    }
+
+    public Talk(String eventId, Date date) throws JSONException {
+        object = new JSONObject();
+
+        title = RandomStringUtils.randomAlphabetic(8);
+        object.put("eventId", eventId);
+        object.put("title", title);
+        object.put("date", date);
+    }
 
     public JSONObject getObject() {
         return object;
