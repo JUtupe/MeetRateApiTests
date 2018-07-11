@@ -10,10 +10,11 @@ public class Talk {
     private String title;
     private Date date;
 
-    public Talk() throws JSONException {
+    public Talk(String eventId) throws JSONException {
         object = new JSONObject();
 
-        title = RandomStringUtils.randomAlphabetic(8) + " " + RandomStringUtils.randomAlphabetic(8);
+        title = RandomStringUtils.randomAlphabetic(8);
+        object.put("eventId", eventId);
         object.put("title", title);
         object.put("date", date);
 
