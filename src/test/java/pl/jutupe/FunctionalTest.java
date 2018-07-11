@@ -1,9 +1,7 @@
 package pl.jutupe;
 
 import io.restassured.RestAssured;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.json.JSONException;
 import org.junit.BeforeClass;
 import pl.jutupe.object.User;
@@ -24,27 +22,12 @@ public class FunctionalTest {
                 .then().extract().cookie("connect.sid");
     }
 
-    public static JsonPath createSpeaker() throws JSONException {
-        User user = new User(UserType.SPEAKER);
+    static String createUserCookie(UserType type) throws JSONException {
+        User user = new User(type);
 
         response = given().header("Content-Type", "application/json")
                 .body(user.toString())
                 .cookie("connect.sid", ADMIN_SESSION_COOKIE).post("v1/user");
-
-        response.getBody().prettyPrint();
-        return response.jsonPath();
-    }
-
-    static String createAdminCookie() throws JSONException {
-        RequestSpecification request = RestAssured.given();
-
-        User user = new User(UserType.SPEAKER);
-
-        request.header("Content-Type", "application/json")
-                .body(user.toString())
-                .cookie("connect.sid", ADMIN_SESSION_COOKIE);
-
-        Response response = request.post("v1/user");
 
         return given().header("email", user.getEmail()).header("password_hash", response.jsonPath().get("password_hash"))
                 .when().get("v1/login")
