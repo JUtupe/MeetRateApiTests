@@ -22,6 +22,14 @@ public class User {
         object.put("type", type.getId());
     }
 
+    public User(UserType type, String name, String email) throws JSONException {
+        object = new JSONObject();
+
+        object.put("name", name);
+        object.put("email", email);
+        object.put("type", type.getId());
+    }
+
     public JSONObject getObject() {
         return object;
     }
