@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.junit.BeforeClass;
 import pl.jutupe.object.Event;
 import pl.jutupe.object.User;
-
 import static io.restassured.RestAssured.given;
 
 public class FunctionalTest {
@@ -24,9 +23,15 @@ public class FunctionalTest {
                 .then().extract().cookie("connect.sid");
     }
 
+    //TODO DODAC ZWYKLY TYP DO POBRANIA
     static String createUserCookie(UserType type) throws JSONException {
+        if(type == UserType.USER){
+            return given().get("../").cookie("connect.sid");
+        }
+
         User user = new User(type);
 
+        //rejestracja
         response = given().header("Content-Type", "application/json")
                 .body(user.toString())
                 .cookie("connect.sid", ADMIN_SESSION_COOKIE).post("v1/user");

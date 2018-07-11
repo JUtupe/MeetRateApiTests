@@ -12,9 +12,9 @@ public class Location {
     private JSONObject object;
 
     //todo losowe
-    public Location() throws JSONException {
-        city = "Żarów";
-        place = "Plac powstańców żelaznych";
+    Location() throws JSONException {
+        city = "Zarow";
+        place = "placyk";
 
         lat = 10.0;
         lng = 12.1231231;
@@ -24,7 +24,7 @@ public class Location {
         object.put("city", city);
         object.put("place", place);
         object.put("lat", lat);
-        object.put("lag", lng);
+        object.put("lng", lng);
     }
 
     public JSONObject getObject() {

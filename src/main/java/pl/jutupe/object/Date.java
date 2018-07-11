@@ -9,6 +9,7 @@ public class Date {
     private JSONObject object;
 
     //todo na podst aktualnego czasu
+  
     public Date() throws JSONException {
         start = Long.toString(10000L);
         end = Long.toString(1000000L);

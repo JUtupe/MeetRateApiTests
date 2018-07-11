@@ -19,6 +19,8 @@ public class EventTests extends FunctionalTest {
                 .body(event.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
+        response.prettyPrint();
+
         Assert.assertEquals(201, response.getStatusCode());
     }
 }

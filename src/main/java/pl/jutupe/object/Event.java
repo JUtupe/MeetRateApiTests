@@ -18,7 +18,7 @@ public class Event {
         info = RandomStringUtils.randomAlphanumeric(100);
 
         object.put("name", name);
-        object.put("img", "#notatka( tu jest zdjęcie )");
+        object.put("img", "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==");
         object.put("date", new Date().toString());
         object.put("location", new Location().toString());
         object.put("info", info);
