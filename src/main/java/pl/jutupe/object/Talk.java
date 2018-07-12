@@ -33,7 +33,7 @@ public class Talk {
         title = RandomStringUtils.randomAlphabetic(8);
         object.put("eventId", eventId);
         object.put("title", title);
-        object.put("date", new Date().getObject());
+        object.put("date", date.getObject());
     }
 
     public JSONObject getObject() {

@@ -11,7 +11,7 @@ public class Date {
     //todo na podst aktualnego czasu
   
     public Date() throws JSONException {
-        start = Long.toString(System.currentTimeMillis()/1000);
+        start = Long.toString((System.currentTimeMillis()/1000)+10000);
         end = Long.toString((System.currentTimeMillis()/1000)+30000);
 
         object = new JSONObject();

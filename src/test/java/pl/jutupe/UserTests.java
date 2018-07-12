@@ -115,7 +115,7 @@ public class UserTests extends FunctionalTest {
 
     @Test
     public void testPostUserWithTooBigType() throws JSONException {
-        String adminCookie = createUserCookie(UserType.ADMIN);
+        String adminCookie = createUserCookie(UserType.SUPER_ADMIN);
 
         User user = new User(UserType.INVALID_TYPE_3);
 
@@ -419,6 +419,8 @@ public class UserTests extends FunctionalTest {
 
         String userId = firstJsonPath.get("_id");
 
+        System.out.println(userId);
+
         //
 
         response = given().cookie("connect.sid", superAdminCookie).get("v1/user/" + userId);
@@ -509,6 +511,49 @@ public class UserTests extends FunctionalTest {
 
         Assert.assertEquals(200, response.getStatusCode());
     }
+
     //todo testy patch user
 
+    @Test
+    public void testNormalUserPatchSpeaker() throws JSONException {
+        String adminCookie = createUserCookie(UserType.ADMIN);
+        String name1 = RandomStringUtils.randomAlphabetic(5) + " " + RandomStringUtils.randomAlphabetic(5);
+        String name2 = RandomStringUtils.randomAlphabetic(5) + " " + RandomStringUtils.randomAlphabetic(5);
+        String email = RandomStringUtils.randomAlphabetic(8) + "@co.pl";
+
+        User user = new User(UserType.SPEAKER, name1, email);
+        User user2 = new User(UserType.SPEAKER, name2, email);
+
+
+        response = given().header("Content-Type", "application/json")
+                .body(user.toString())
+                .cookie("connect.sid", adminCookie).post("v1/user");
+
+        JsonPath jsonPath = response.jsonPath();
+
+        //
+
+        String userCookie = createUserCookie(UserType.USER);
+
+        response = given().header("Content-Type", "application/json")
+                .body(user2.toString())
+                .cookie("connect.sid", userCookie).patch("v1/user/" + jsonPath.get("_id"));
+
+        Assert.assertEquals(403, response.getStatusCode());
+    }
+
+    /*@Test
+    public void test() throws JSONException {
+        String adminCookie = createUserCookie(UserType.SPEAKER);
+        System.out.println(adminCookie);
+        User user = new User(UserType.SPEAKER);
+
+        System.out.println(user.getObject().toString());
+
+        response = given().header("Content-Type", "application/json")
+                .body(user.toString())
+                .cookie("connect.sid", adminCookie).post("v1/user");
+
+        response.prettyPrint();
+    }*/
 }

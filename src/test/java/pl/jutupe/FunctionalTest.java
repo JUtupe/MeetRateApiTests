@@ -8,8 +8,6 @@ import org.junit.BeforeClass;
 import pl.jutupe.object.Event;
 import pl.jutupe.object.User;
 
-import java.util.List;
-
 import static io.restassured.RestAssured.given;
 
 public class FunctionalTest {
@@ -18,7 +16,9 @@ public class FunctionalTest {
 
     @BeforeClass
     public static void setUp(){
-        RestAssured.baseURI = "http://206.142.240.132/api/";
+        //RestAssured.baseURI = "http://dev-vote.rst.com.pl/api/";
+        RestAssured.baseURI = "http://10.67.1.147/api/";
+
         RestAssured.port = 80;
 
         ADMIN_SESSION_COOKIE = given().header("email", "tester").header("password_hash", "$2b$10$.l5sh.UWxrUsYVRUpmuyB.jkQLUFOVbCONYz2C7/9gfDgTJGRGdl6")
@@ -37,6 +37,7 @@ public class FunctionalTest {
         response = given().header("Content-Type", "application/json")
                 .body(user.toString())
                 .cookie("connect.sid", ADMIN_SESSION_COOKIE).post("v1/user");
+        response.prettyPrint();
 
         return given().header("email", user.getEmail()).header("password_hash", response.jsonPath().get("password_hash"))
                 .when().get("v1/login")
