@@ -20,10 +20,10 @@ public class UserTests extends FunctionalTest {
                 .body(user.toString())
                 .cookie("connect.sid", adminCookie).post("v1/user");
 
-        JsonPath jsonPathEvaluator = response.jsonPath();
+        JsonPath jsonPath = response.jsonPath();
 
         Assert.assertEquals(201, response.getStatusCode());
-        Assert.assertEquals(UserType.SPEAKER.getId(), jsonPathEvaluator.getString("type"));
+        Assert.assertEquals(UserType.SPEAKER.getId(), jsonPath.getString("type"));
     }
 
     @Test
@@ -36,10 +36,10 @@ public class UserTests extends FunctionalTest {
                 .body(user.toString())
                 .cookie("connect.sid", superAdminCookie).post("v1/user");
 
-        JsonPath jsonPathEvaluator = response.jsonPath();
+        JsonPath jsonPath = response.jsonPath();
 
         Assert.assertEquals(201, response.getStatusCode());
-        Assert.assertEquals(UserType.ADMIN.getId(), jsonPathEvaluator.getString("type"));
+        Assert.assertEquals(UserType.ADMIN.getId(), jsonPath.getString("type"));
     }
 
     @Test
@@ -52,10 +52,10 @@ public class UserTests extends FunctionalTest {
                 .body(user.toString())
                 .cookie("connect.sid", superAdminCookie).post("v1/user");
 
-        JsonPath jsonPathEvaluator = response.jsonPath();
+        JsonPath jsonPath = response.jsonPath();
 
         Assert.assertEquals(201, response.getStatusCode());
-        Assert.assertEquals(UserType.SUPER_ADMIN.getId(), jsonPathEvaluator.getString("type"));
+        Assert.assertEquals(UserType.SUPER_ADMIN.getId(), jsonPath.getString("type"));
     }
 
     @Test
@@ -67,6 +67,10 @@ public class UserTests extends FunctionalTest {
         response = given().header("Content-Type", "application/json")
                 .body(user.toString())
                 .cookie("connect.sid", superAdminCookie).when().post("v1/user");
+
+        JsonPath jsonPath = response.jsonPath();
+
+
 
         Assert.assertEquals(400, response.getStatusCode());
     }
@@ -114,6 +118,21 @@ public class UserTests extends FunctionalTest {
         String adminCookie = createUserCookie(UserType.ADMIN);
 
         User user = new User(UserType.INVALID_TYPE_3);
+
+        response = given().header("Content-Type", "application/json")
+                .body(user.toString())
+                .cookie("connect.sid", adminCookie).when().post("v1/user");
+
+        response.prettyPrint();
+
+        Assert.assertEquals(400, response.getStatusCode());
+    }
+
+    @Test
+    public void testPostUserWithDotEndedType() throws JSONException {
+        String adminCookie = createUserCookie(UserType.ADMIN);
+
+        User user = new User(UserType.INVALID_TYPE_4);
 
         response = given().header("Content-Type", "application/json")
                 .body(user.toString())
@@ -366,7 +385,6 @@ public class UserTests extends FunctionalTest {
         Assert.assertEquals(201, response.getStatusCode());
 
         JsonPath firstJsonPath = response.jsonPath();
-
         String userId = firstJsonPath.get("_id");
 
         //
@@ -462,16 +480,35 @@ public class UserTests extends FunctionalTest {
         Assert.assertEquals(401, response.getStatusCode());
     }
 
-    //todo testy login i logout
+    @Test
+    public void testInvalidUserGetSalt(){
+        String randomEmail = RandomStringUtils.randomAlphabetic(8) + "@co.pl";
+        response = given().when().get("/v1/login/" + randomEmail);
+
+        Assert.assertEquals(404, response.getStatusCode());
+    }
 
     @Test
-    public void testSpeakerLogin(){}
+    public void testUserGetSalt() throws JSONException {
+        String adminCookie = createUserCookie(UserType.ADMIN);
 
-    @Test
-    public void testAdminLogin(){}
+        String email = RandomStringUtils.randomAlphabetic(8) + "@co.pl";
+        String name = RandomStringUtils.randomAlphabetic(5) + " " + RandomStringUtils.randomAlphabetic(5);
 
-    @Test
-    public void testSuperAdminLogin(){}
+        User user = new User(UserType.SPEAKER, name, email);
 
+        response = given().header("Content-Type", "application/json")
+                .body(user.toString())
+                .cookie("connect.sid", adminCookie).post("v1/user");
+
+        Assert.assertEquals(201, response.getStatusCode());
+
+        //
+
+        response = given().get("v1/login/" + email);
+
+        Assert.assertEquals(200, response.getStatusCode());
+    }
     //todo testy patch user
+
 }

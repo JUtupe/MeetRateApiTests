@@ -16,8 +16,8 @@ public class Location {
         city = "Zarow";
         place = "placyk";
 
-        lat = 10.0;
-        lng = 12.1231231;
+        lat = 1.434;
+        lng = 2.4324;
 
         object = new JSONObject();
 

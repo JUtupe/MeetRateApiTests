@@ -1,4 +1,4 @@
 package pl.jutupe;
 
-public class ObjectDateTests {
+public class ObjectDateTests extends  FunctionalTest {
 }

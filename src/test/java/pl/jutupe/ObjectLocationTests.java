@@ -1,4 +1,4 @@
 package pl.jutupe;
 
-public class ObjectLocationTests {
+public class ObjectLocationTests extends FunctionalTest{
 }

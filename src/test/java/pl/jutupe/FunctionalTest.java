@@ -7,10 +7,13 @@ import org.json.JSONException;
 import org.junit.BeforeClass;
 import pl.jutupe.object.Event;
 import pl.jutupe.object.User;
+
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
 
 public class FunctionalTest {
-    static String ADMIN_SESSION_COOKIE;
+    private static String ADMIN_SESSION_COOKIE;
     static Response response;
 
     @BeforeClass
@@ -23,7 +26,6 @@ public class FunctionalTest {
                 .then().extract().cookie("connect.sid");
     }
 
-    //TODO DODAC ZWYKLY TYP DO POBRANIA
     static String createUserCookie(UserType type) throws JSONException {
         if(type == UserType.USER){
             return given().get("../").cookie("connect.sid");

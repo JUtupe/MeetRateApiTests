@@ -1,9 +1,6 @@
 package pl.jutupe;
 
-
-
 import io.restassured.path.json.JsonPath;
-import io.restassured.path.json.exception.JsonPathException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONException;
 import org.junit.Assert;
@@ -182,10 +179,9 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        JsonPath firstJsonPath = response.jsonPath();
-
         Assert.assertEquals(201, response.getStatusCode());
 
+        JsonPath firstJsonPath = response.jsonPath();
         String talkId = firstJsonPath.get("talkId");
 
         /*Tutaj robię dopiero get*/
@@ -193,7 +189,6 @@ public class TalkTests extends FunctionalTest {
         response = given().cookie("connect.sid", adminSessionCookie).get("v1/talk/" + talkId);
 
         JsonPath secondJsonPath = response.jsonPath();
-
         String secondTitle = secondJsonPath.get("title");
 
         Assert.assertEquals(firstTitle, secondTitle);
