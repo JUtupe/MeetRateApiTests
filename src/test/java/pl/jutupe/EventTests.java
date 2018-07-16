@@ -75,7 +75,9 @@ public class EventTests extends FunctionalTest {
 
     @Test
     public void testGetEvent() throws JSONException {
-        JsonPath jsonPath = createEvent();
+        String sessionCookie = createUserCookie(UserType.ADMIN);
+
+        JsonPath jsonPath = createEvent(sessionCookie);
         String eventId = jsonPath.get("_id");
 
         //
