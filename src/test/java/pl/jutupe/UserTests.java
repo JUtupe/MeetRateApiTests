@@ -38,6 +38,7 @@ public class UserTests extends FunctionalTest {
 
         JsonPath jsonPath = response.jsonPath();
 
+        response.prettyPrint();
         Assert.assertEquals(201, response.getStatusCode());
         Assert.assertEquals(UserType.ADMIN.getId(), jsonPath.getString("type"));
     }
@@ -542,11 +543,11 @@ public class UserTests extends FunctionalTest {
         Assert.assertEquals(403, response.getStatusCode());
     }
 
-    /*@Test
+    @Test
     public void test() throws JSONException {
-        String adminCookie = createUserCookie(UserType.SPEAKER);
+        String adminCookie = createUserCookie(UserType.SUPER_ADMIN);
         System.out.println(adminCookie);
-        User user = new User(UserType.SPEAKER);
+        User user = new User(UserType.SUPER_ADMIN);
 
         System.out.println(user.getObject().toString());
 
@@ -555,5 +556,5 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).post("v1/user");
 
         response.prettyPrint();
-    }*/
+    }
 }

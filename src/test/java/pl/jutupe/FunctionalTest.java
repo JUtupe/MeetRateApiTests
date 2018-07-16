@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import org.json.JSONException;
 import org.junit.BeforeClass;
 import pl.jutupe.object.Event;
+import pl.jutupe.object.Talk;
 import pl.jutupe.object.User;
 
 import static io.restassured.RestAssured.given;
@@ -17,11 +18,11 @@ public class FunctionalTest {
     @BeforeClass
     public static void setUp(){
         //RestAssured.baseURI = "http://dev-vote.rst.com.pl/api/";
-        RestAssured.baseURI = "http://10.67.1.147/api/";
+        RestAssured.baseURI = "http://10.67.1.253/api/";
 
-        RestAssured.port = 80;
+        RestAssured.port = 3000;
 
-        ADMIN_SESSION_COOKIE = given().header("email", "tester").header("password_hash", "$2b$10$.l5sh.UWxrUsYVRUpmuyB.jkQLUFOVbCONYz2C7/9gfDgTJGRGdl6")
+        ADMIN_SESSION_COOKIE = given().header("email", "co@co.pl").header("password_hash", "start123")
                 .when().get("v1/login")
                 .then().extract().cookie("connect.sid");
     }
@@ -37,31 +38,31 @@ public class FunctionalTest {
         response = given().header("Content-Type", "application/json")
                 .body(user.toString())
                 .cookie("connect.sid", ADMIN_SESSION_COOKIE).post("v1/user");
-        response.prettyPrint();
 
         return given().header("email", user.getEmail()).header("password_hash", response.jsonPath().get("password_hash"))
                 .when().get("v1/login")
                 .then().extract().cookie("connect.sid");
     }
 
-    static JsonPath createEvent() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-
+    static JsonPath createEvent(String sessionCookie) throws JSONException {
         Event event = new Event();
 
         response = given().header("Content-Type", "application/json")
                 .body(event.toString())
-                .cookie("connect.sid", adminSessionCookie).post("v1/event");
+                .cookie("connect.sid", sessionCookie).post("v1/event");
 
         return response.jsonPath();
     }
 
-    static JsonPath createEvent(String adminSessionCookie) throws JSONException {
-        Event event = new Event();
+    static  JsonPath createTalk(String sessionCookie) throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+
+        Talk talk = new Talk(eventId);
 
         response = given().header("Content-Type", "application/json")
-                .body(event.toString())
-                .cookie("connect.sid", adminSessionCookie).post("v1/event");
+                .body(talk.toString())
+                .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
         return response.jsonPath();
     }
