@@ -18,8 +18,10 @@ public class FunctionalTest {
     @BeforeClass
     public static void setUp(){
         //RestAssured.baseURI = "http://dev-vote.rst.com.pl/api/";
-        RestAssured.baseURI = "http://10.67.1.253/api/";
+        //RestAssured.baseURI = "http://10.67.1.147/api/";
+        RestAssured.baseURI = "http://127.0.0.1/api/";
 
+        //RestAssured.port = 80;
         RestAssured.port = 3000;
 
         ADMIN_SESSION_COOKIE = given().header("email", "co@co.pl").header("password_hash", "start123")
@@ -54,15 +56,14 @@ public class FunctionalTest {
         return response.jsonPath();
     }
 
-    static  JsonPath createTalk(String sessionCookie) throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String eventId = createEvent(adminSessionCookie).get("_id");
+    static JsonPath createTalk(String sessionCookie) throws JSONException {
+        String eventId = createEvent(sessionCookie).get("_id");
 
         Talk talk = new Talk(eventId);
 
         response = given().header("Content-Type", "application/json")
                 .body(talk.toString())
-                .cookie("connect.sid", adminSessionCookie).post("v1/talk");
+                .cookie("connect.sid", sessionCookie).post("v1/talk");
 
         return response.jsonPath();
     }
