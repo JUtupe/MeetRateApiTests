@@ -724,8 +724,35 @@ public class UserTests extends FunctionalTest {
 
         response = given().cookie("connect.sid", superAdminCookie).get("v1/user/" + adminId);
         Assert.assertEquals(404, response.getStatusCode());
-        }
+    }
 
+    @Test
+    public void testAdminDeleteSpeaker() throws JSONException {
+        String adminCookie = createUserCookie(UserType.ADMIN);
+
+        User user = new User(UserType.SPEAKER);
+
+        response = given().header("Content-Type", "application/json")
+                .body(user.toString())
+                .cookie("connect.sid", adminCookie).post("v1/user");
+
+        Assert.assertEquals(201, response.getStatusCode());
+
+        JsonPath firstJsonPath = response.jsonPath();
+        String speakerId = firstJsonPath.get("_id");
+
+        Assert.assertEquals(UserType.SPEAKER.getId(), firstJsonPath.getString("type"));
+
+        //delete
+
+        response = given().cookie("connect.sid", adminCookie).delete("v1/user/" + speakerId);
+        Assert.assertEquals(200, response.getStatusCode());
+
+        //get
+
+        response = given().cookie("connect.sid", adminCookie).get("v1/user/" + speakerId);
+        Assert.assertEquals(404, response.getStatusCode());
+    }
     /*@Test
     public void test() throws JSONException {
         String adminCookie = createUserCookie(UserType.SPEAKER);
