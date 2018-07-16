@@ -17,11 +17,18 @@ public class FunctionalTest {
     @BeforeClass
     public static void setUp(){
         //RestAssured.baseURI = "http://dev-vote.rst.com.pl/api/";
-        RestAssured.baseURI = "http://10.67.1.147/api/";
+        //RestAssured.baseURI = "http://10.67.1.147/api/";
+        RestAssured.baseURI = "http://127.0.0.1/api/";
 
-        RestAssured.port = 80;
+        //RestAssured.port = 80;
+        RestAssured.port = 3000;
 
-        ADMIN_SESSION_COOKIE = given().header("email", "tester").header("password_hash", "$2b$10$.l5sh.UWxrUsYVRUpmuyB.jkQLUFOVbCONYz2C7/9gfDgTJGRGdl6")
+
+        /*ADMIN_SESSION_COOKIE = given().header("email", "tester").header("password_hash", "$2b$10$.l5sh.UWxrUsYVRUpmuyB.jkQLUFOVbCONYz2C7/9gfDgTJGRGdl6")
+                .when().get("v1/login")
+                .then().extract().cookie("connect.sid");*/
+
+        ADMIN_SESSION_COOKIE = given().header("email", "co@co.pl").header("password_hash", "start123")
                 .when().get("v1/login")
                 .then().extract().cookie("connect.sid");
     }
@@ -37,7 +44,6 @@ public class FunctionalTest {
         response = given().header("Content-Type", "application/json")
                 .body(user.toString())
                 .cookie("connect.sid", ADMIN_SESSION_COOKIE).post("v1/user");
-        response.prettyPrint();
 
         return given().header("email", user.getEmail()).header("password_hash", response.jsonPath().get("password_hash"))
                 .when().get("v1/login")
