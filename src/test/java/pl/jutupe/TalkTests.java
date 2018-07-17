@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import pl.jutupe.object.Date;
 import pl.jutupe.object.Talk;
+import pl.jutupe.enums.UserType;
+
 import static io.restassured.RestAssured.*;
 
 public class TalkTests extends FunctionalTest {
@@ -15,7 +17,7 @@ public class TalkTests extends FunctionalTest {
     //todo testy post /talk
 
     @Test
-    public void  testPostTalk() throws JSONException {
+    public void testPostTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
         String eventId = createEvent(adminSessionCookie).get("_id");

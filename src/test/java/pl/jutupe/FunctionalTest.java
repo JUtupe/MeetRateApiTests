@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import pl.jutupe.object.Event;
 import pl.jutupe.object.Talk;
 import pl.jutupe.object.User;
+import pl.jutupe.enums.UserType;
 
 import static io.restassured.RestAssured.given;
 

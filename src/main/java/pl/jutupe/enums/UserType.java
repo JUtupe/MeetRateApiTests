@@ -1,4 +1,4 @@
-package pl.jutupe;
+package pl.jutupe.enums;
 
 public enum UserType {
     USER("0"),

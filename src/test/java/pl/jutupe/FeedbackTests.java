@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import pl.jutupe.object.Feedback;
+import pl.jutupe.enums.UserType;
+
 import static io.restassured.RestAssured.*;
 
 
@@ -86,7 +88,6 @@ public class FeedbackTests extends FunctionalTest {
         Assert.assertEquals(400, response.getStatusCode());
     }
 
-
     @Test
     public void testPostFeedbackForTalkByAdmin() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -103,8 +104,9 @@ public class FeedbackTests extends FunctionalTest {
 
     @Test
     public void testPostFeedbackForTalkBySpeaker() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
-        String talkId = createTalk(speakerSessionCookie).get("_id");
+        String talkId = createTalk(adminSessionCookie).get("_id");
 
         Feedback feedback = new Feedback();
 
@@ -117,8 +119,9 @@ public class FeedbackTests extends FunctionalTest {
 
     @Test
     public void testPostFeedbackForTalkByUser() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String userSessionCookie = createUserCookie(UserType.USER);
-        String talkId = createTalk(userSessionCookie).get("_id");
+        String talkId = createTalk(adminSessionCookie).get("_id");
 
         Feedback feedback = new Feedback();
 
@@ -131,8 +134,10 @@ public class FeedbackTests extends FunctionalTest {
 
     @Test
     public void testPostFeedbackForTalkByUserWhenContentIsTooBig() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String userSessionCookie = createUserCookie(UserType.USER);
-        String talkId = createTalk(userSessionCookie).get("_id");
+        String talkId = createTalk(adminSessionCookie).get("_id");
+
         String content = RandomStringUtils.randomAlphabetic(3000);
         String rating = "1";
 
