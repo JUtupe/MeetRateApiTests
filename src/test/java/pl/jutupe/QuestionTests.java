@@ -5,9 +5,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
-
+import pl.jutupe.enums.UserType;
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
 
 public class QuestionTests extends FunctionalTest {
 
