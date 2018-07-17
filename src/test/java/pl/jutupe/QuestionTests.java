@@ -5,7 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
-import pl.jutupe.enums.ErrorType;
+import pl.jutupe.enums.UserType;
 import static io.restassured.RestAssured.*;
 
 public class QuestionTests extends FunctionalTest {
