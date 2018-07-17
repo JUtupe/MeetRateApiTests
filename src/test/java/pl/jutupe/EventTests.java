@@ -21,7 +21,6 @@ public class EventTests extends FunctionalTest {
         response = given().header("Content-Type", "application/json")
                 .body(event.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
-
         Assert.assertEquals(201, response.getStatusCode());
     }
 
