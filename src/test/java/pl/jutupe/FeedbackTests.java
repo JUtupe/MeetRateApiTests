@@ -5,6 +5,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
+import pl.jutupe.enums.ErrorType;
 import pl.jutupe.object.Feedback;
 import pl.jutupe.enums.UserType;
 
@@ -236,7 +237,9 @@ public class FeedbackTests extends FunctionalTest {
                 .body(feedback.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
 
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
         Assert.assertEquals(400, response.getStatusCode());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING_CONTENT));
     }
     //todo test get /feedback
 
