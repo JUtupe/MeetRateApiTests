@@ -14,7 +14,7 @@ import static io.restassured.RestAssured.*;
 public class FeedbackTests extends FunctionalTest {
 
     @Test
-    public void testPostFeedbackForEventByAdmin() throws JSONException {
+    public void testAdminPostFeedbackForEvent() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String eventId = createEvent(adminSessionCookie).get("_id");
 
@@ -28,7 +28,20 @@ public class FeedbackTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostFeedbackForEventBySpeaker() throws JSONException {
+    public void testSuperAdminPostFeedbackForEvent() throws JSONException {
+        String superAdminSessionCookie = createUserCookie(UserType.ADMIN);
+        String eventId = createEvent(superAdminSessionCookie).get("_id");
+
+        Feedback feedback = new Feedback();
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", superAdminSessionCookie).post("v1/feedback/event/" + eventId);
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+    @Test
+    public void testSpeakerPostFeedbackForEvent() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
         String eventId = createEvent(adminSessionCookie).get("_id");
@@ -43,7 +56,7 @@ public class FeedbackTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostFeedbackForEventByUser() throws JSONException {
+    public void testUserPostFeedbackForEvent() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String userSessionCookie = createUserCookie(UserType.USER);
         String eventId = createEvent(adminSessionCookie).get("_id");
@@ -58,7 +71,7 @@ public class FeedbackTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostFeedbackForEventWhenRatingIsInvalid() throws JSONException {
+    public void testAdminPostFeedbackForEventWhenRatingIsInvalid() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String eventId = createEvent(adminSessionCookie).get("_id");
         String rating = "16";
@@ -73,7 +86,23 @@ public class FeedbackTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostFeedbackForEventWhenContentIsTooBig() throws JSONException {
+    public void testAdminPostFeedbackForEventWhenRatingIsValid() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+        String rating = "5";
+
+        Feedback feedback = new Feedback(rating);
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+
+
+    @Test
+    public void testAdminPostFeedbackForEventWhenContentIsTooBig() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String eventId = createEvent(adminSessionCookie).get("_id");
         String content = RandomStringUtils.randomAlphabetic(3000);
@@ -88,8 +117,25 @@ public class FeedbackTests extends FunctionalTest {
         Assert.assertEquals(400, response.getStatusCode());
     }
 
+
     @Test
-    public void testPostFeedbackForTalkByAdmin() throws JSONException {
+    public void testAdminPostFeedbackForEventWhenContentIsEmpty() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+        String content = "";
+        String rating = "1";
+
+        Feedback feedback = new Feedback(rating,content);
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
+
+        Assert.assertEquals(400, response.getStatusCode());
+    }
+
+   @Test
+    public void testAdminPostFeedbackForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String talkId = createTalk(adminSessionCookie).get("_id");
 
@@ -103,7 +149,20 @@ public class FeedbackTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostFeedbackForTalkBySpeaker() throws JSONException {
+    public void testSuperAdminPostFeedbackForTalk() throws JSONException {
+        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
+        String talkId = createTalk(superAdminSessionCookie).get("_id");
+
+        Feedback feedback = new Feedback();
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", superAdminSessionCookie).post("v1/feedback/talk/" + talkId);
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+    @Test
+    public void testSpeakerPostFeedbackForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
         String talkId = createTalk(adminSessionCookie).get("_id");
@@ -118,7 +177,7 @@ public class FeedbackTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostFeedbackForTalkByUser() throws JSONException {
+    public void testUserPostFeedbackForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String userSessionCookie = createUserCookie(UserType.USER);
         String talkId = createTalk(adminSessionCookie).get("_id");
@@ -131,13 +190,27 @@ public class FeedbackTests extends FunctionalTest {
 
         Assert.assertEquals(201, response.getStatusCode());
     }
-
+  
     @Test
-    public void testPostFeedbackForTalkByUserWhenContentIsTooBig() throws JSONException {
+    public void testAdminPostFeedbackForTalkWhenRatingIsInvalid() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+        String rating = "5";
+
+        Feedback feedback = new Feedback(rating);
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
+
+        Assert.assertEquals(400, response.getStatusCode());
+    }
+  
+    @Test
+    public void testUserPostFeedbackForTalkWhenContentIsTooBig() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String userSessionCookie = createUserCookie(UserType.USER);
         String talkId = createTalk(adminSessionCookie).get("_id");
-
         String content = RandomStringUtils.randomAlphabetic(3000);
         String rating = "1";
 
@@ -150,10 +223,25 @@ public class FeedbackTests extends FunctionalTest {
         Assert.assertEquals(400, response.getStatusCode());
     }
 
+    @Test
+    public void testAdminPostFeedbackForTooWhenContentIsEmpty() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+        String content = "";
+        String rating = "1";
+
+        Feedback feedback = new Feedback(rating,content);
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
+
+        Assert.assertEquals(400, response.getStatusCode());
+    }
     //todo test get /feedback
 
     @Test
-    public void testGetFeedback() throws JSONException {
+    public void testAdminGetFeedback() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String eventId = createEvent(adminSessionCookie).get("_id");
 

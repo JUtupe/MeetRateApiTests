@@ -19,8 +19,8 @@ public class FunctionalTest {
     @BeforeClass
     public static void setUp(){
         //RestAssured.baseURI = "http://dev-vote.rst.com.pl/api/";
-        //RestAssured.baseURI = "http://10.67.1.147/api/";
-        RestAssured.baseURI = "http://127.0.0.1/api/";
+        RestAssured.baseURI = "http://10.67.1.253/api/";
+        //RestAssured.baseURI = "http://127.0.0.1/api/";
 
         //RestAssured.port = 80;
         RestAssured.port = 3000;
