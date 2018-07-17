@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import pl.jutupe.object.Date;
 import pl.jutupe.object.Talk;
+import pl.jutupe.enums.UserType;
+
 import static io.restassured.RestAssured.*;
 
 public class TalkTests extends FunctionalTest {

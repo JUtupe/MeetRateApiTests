@@ -3,11 +3,10 @@ package pl.jutupe.object;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pl.jutupe.UserType;
+import pl.jutupe.enums.UserType;
 
 public class User {
     private JSONObject object;
-
     private String name;
     private String email;
 

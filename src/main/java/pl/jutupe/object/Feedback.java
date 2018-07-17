@@ -34,6 +34,14 @@ public class Feedback {
         object.put("rating", rating);
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
     @Override
     public String toString() {
         return object.toString();

@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import pl.jutupe.object.Feedback;
+import pl.jutupe.enums.UserType;
+
 import static io.restassured.RestAssured.*;
 
 
@@ -115,6 +117,7 @@ public class FeedbackTests extends FunctionalTest {
         Assert.assertEquals(400, response.getStatusCode());
     }
 
+
     @Test
     public void testAdminPostFeedbackForEventWhenContentIsEmpty() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -130,7 +133,8 @@ public class FeedbackTests extends FunctionalTest {
 
         Assert.assertEquals(400, response.getStatusCode());
     }
-    @Test
+
+   @Test
     public void testAdminPostFeedbackForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String talkId = createTalk(adminSessionCookie).get("_id");
@@ -186,6 +190,7 @@ public class FeedbackTests extends FunctionalTest {
 
         Assert.assertEquals(201, response.getStatusCode());
     }
+  
     @Test
     public void testAdminPostFeedbackForTalkWhenRatingIsInvalid() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -200,6 +205,7 @@ public class FeedbackTests extends FunctionalTest {
 
         Assert.assertEquals(400, response.getStatusCode());
     }
+  
     @Test
     public void testUserPostFeedbackForTalkWhenContentIsTooBig() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);

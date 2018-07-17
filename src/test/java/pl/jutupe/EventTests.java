@@ -7,13 +7,16 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import pl.jutupe.object.Event;
+import pl.jutupe.enums.UserType;
 
 import static io.restassured.RestAssured.given;
 
 public class EventTests extends FunctionalTest {
 
+    //POST
+
     @Test
-    public void testPostEvent() throws JSONException {
+    public void testAdminPostEvent() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
         Event event = new Event();
@@ -25,7 +28,7 @@ public class EventTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostEventWithTooBigName() throws JSONException {
+    public void testAdminPostEventWithTooBigName() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
         String name = RandomStringUtils.randomAlphabetic(10000);
@@ -41,7 +44,7 @@ public class EventTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostEventWithTooBigInfo() throws JSONException {
+    public void testAdminPostEventWithTooBigInfo() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
         String name = RandomStringUtils.randomAlphabetic(30);
@@ -57,7 +60,7 @@ public class EventTests extends FunctionalTest {
     }
 
     @Test
-    public void testPostEventWithAsciiName() throws JSONException {
+    public void testAdminPostEventWithAsciiName() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
         String name = RandomStringUtils.randomAscii(50);
@@ -73,7 +76,22 @@ public class EventTests extends FunctionalTest {
     }
 
     @Test
-    public void testGetEvent() throws JSONException {
+    public void testSuperAdminPostEvent() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
+
+        Event event = new Event();
+
+        response = given().header("Content-Type", "application/json")
+                .body(event.toString())
+                .cookie("connect.sid", adminSessionCookie).post("v1/event");
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+
+    //GET
+
+    @Test
+    public void testUserGetEvent() throws JSONException {
         String sessionCookie = createUserCookie(UserType.ADMIN);
 
         JsonPath jsonPath = createEvent(sessionCookie);
@@ -87,15 +105,17 @@ public class EventTests extends FunctionalTest {
     }
 
     @Test
-    public void testGetAllEvents(){
+    public void testUserGetAllEvents(){
         response = given().get("v1/event");
 
         Assert.assertEquals(200, response.getStatusCode());
     }
 
+    //PATCH
+
     //todo testy każdego parametru
     @Test
-    public void testPatchEvent() throws JSONException {
+    public void testAdminPatchEvent() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         JsonPath eventJson = createEvent(adminSessionCookie);
         String eventId = eventJson.get("_id");
@@ -105,7 +125,6 @@ public class EventTests extends FunctionalTest {
 
         JSONObject object = new JSONObject();
         object.put("name", newName);
-
 
         response = given().header("Content-Type", "application/json")
                 .body(object.toString())
@@ -118,7 +137,31 @@ public class EventTests extends FunctionalTest {
     }
 
     @Test
-    public void testDeleteEvent() throws JSONException {
+    public void testSuperAdminPatchEvent() throws JSONException {
+        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
+        JsonPath eventJson = createEvent(superAdminSessionCookie);
+        String eventId = eventJson.get("_id");
+        String oldName = eventJson.get("name");
+
+        String newName = RandomStringUtils.randomAlphabetic(8);
+
+        JSONObject object = new JSONObject();
+        object.put("name", newName);
+
+        response = given().header("Content-Type", "application/json")
+                .body(object.toString())
+                .cookie("connect.sid", superAdminSessionCookie).patch("v1/event/" + eventId);
+
+        Assert.assertEquals(200, response.getStatusCode());
+
+        JsonPath responseJson = response.jsonPath();
+        Assert.assertEquals(oldName, responseJson.get("name"));
+    }
+
+    //DELETE
+
+    @Test
+    public void testAdminDeleteEvent() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
         JsonPath jsonPath = createEvent(adminSessionCookie);
@@ -127,6 +170,26 @@ public class EventTests extends FunctionalTest {
         //delete
 
         response = given().cookie("connect.sid", adminSessionCookie).delete("v1/event/" + eventId);
+        response.prettyPrint();
+        Assert.assertEquals(200, response.getStatusCode());
+
+        //get
+
+        response = given().get("v1/event/" + eventId);
+
+        Assert.assertEquals(404, response.getStatusCode());
+    }
+
+    @Test
+    public void testSuperAdminDeleteEvent() throws JSONException {
+        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
+
+        JsonPath jsonPath = createEvent(superAdminSessionCookie);
+        String eventId = jsonPath.get("_id");
+
+        //delete
+
+        response = given().cookie("connect.sid", superAdminSessionCookie).delete("v1/event/" + eventId);
         response.prettyPrint();
         Assert.assertEquals(200, response.getStatusCode());
 
