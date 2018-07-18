@@ -11,7 +11,6 @@ import pl.jutupe.object.User;
 import pl.jutupe.enums.UserType;
 import static io.restassured.RestAssured.*;
 
-
 public class UserTests extends FunctionalTest {
 
     //POST
@@ -338,10 +337,7 @@ public class UserTests extends FunctionalTest {
                 .body(user.toString())
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
-        Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
+        Assert.assertEquals(201, response.getStatusCode());
     }
 
     @Test
@@ -357,10 +353,7 @@ public class UserTests extends FunctionalTest {
                 .body(user.toString())
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
-        Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EMAIL));
+        Assert.assertEquals(201, response.getStatusCode());
     }
 
     @Test

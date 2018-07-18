@@ -118,8 +118,8 @@ public class EventTests extends FunctionalTest {
     }
 
     //PATCH
-
     //todo testy każdego parametru
+
     @Test
     public void testAdminPatchEvent() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);

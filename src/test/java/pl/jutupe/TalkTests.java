@@ -15,7 +15,7 @@ import static io.restassured.RestAssured.*;
 
 public class TalkTests extends FunctionalTest {
 
-    //todo testy get /talk kiedy event jest usunięty
+    //POST
 
     @Test
     public void  testAdminGetTalkWhenEventIsDeleted() throws JSONException {
@@ -45,8 +45,6 @@ public class TalkTests extends FunctionalTest {
 
     }
 
-    //todo testy post /talk kiedy event jest usunięty
-
     @Test
     public void  testAdminPostTalkWhenEventIsDeleted() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -68,7 +66,6 @@ public class TalkTests extends FunctionalTest {
 
         Assert.assertEquals(404, response.getStatusCode());
     }
-    //todo testy post /talk
 
     @Test
     public void  testUserPostTalk() throws JSONException {
@@ -282,8 +279,8 @@ public class TalkTests extends FunctionalTest {
 
         Assert.assertEquals(201, response.getStatusCode());
     }
-    //todo testy get /talk
 
+    //GET
 
     @Test
     public void testUserGetTalk() throws JSONException {
@@ -406,7 +403,7 @@ public class TalkTests extends FunctionalTest {
         Assert.assertEquals(firstTitle, secondTitle);
     }
 
-    //todo testy patch /talk
+    //PATCH
 
     @Test
     public void testUserPatchTalk() throws JSONException {
@@ -544,7 +541,8 @@ public class TalkTests extends FunctionalTest {
         Assert.assertEquals(200, response.getStatusCode());
     }
 
-    //todo testy delete /talk
+    //DELETE
+
     @Test
     public void testUserDeleteTalk() throws JSONException {
         String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
