@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import pl.jutupe.enums.ErrorType;
 import pl.jutupe.object.Date;
 import pl.jutupe.object.Talk;
 import pl.jutupe.enums.UserType;
@@ -65,9 +66,40 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        Assert.assertEquals(400, response.getStatusCode());
+        Assert.assertEquals(404, response.getStatusCode());
     }
     //todo testy post /talk
+
+    @Test
+    public void  testUserPostTalk() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String userSessionCookie = createUserCookie(UserType.USER);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+        Talk talk = new Talk(eventId);
+
+        response = given().header("Content-Type", "application/json")
+                .body(talk.toString())
+                .cookie("connect.sid", userSessionCookie).post("v1/talk");
+
+
+        Assert.assertEquals(403, response.getStatusCode());
+    }
+
+    @Test
+    public void  testSpeakerPostTalk() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+        Talk talk = new Talk(eventId);
+
+        response = given().header("Content-Type", "application/json")
+                .body(talk.toString())
+                .cookie("connect.sid", speakerSessionCookie).post("v1/talk");
+
+
+
+        Assert.assertEquals(403, response.getStatusCode());
+    }
 
     @Test
     public void  testAdminPostTalk() throws JSONException {
@@ -80,7 +112,7 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        response.prettyPrint();
+
 
         Assert.assertEquals(201, response.getStatusCode());
     }
@@ -96,42 +128,11 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", superAdminSessionCookie).post("v1/talk");
 
-        response.prettyPrint();
+
 
         Assert.assertEquals(201, response.getStatusCode());
     }
 
-    @Test
-    public void  testSpeakerPostTalk() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
-        String eventId = createEvent(adminSessionCookie).get("_id");
-        Talk talk = new Talk(eventId);
-
-        response = given().header("Content-Type", "application/json")
-                .body(talk.toString())
-                .cookie("connect.sid", speakerSessionCookie).post("v1/talk");
-
-        response.prettyPrint();
-
-        Assert.assertEquals(403, response.getStatusCode());
-    }
-
-    @Test
-    public void  testUserPostTalk() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String userSessionCookie = createUserCookie(UserType.USER);
-        String eventId = createEvent(adminSessionCookie).get("_id");
-        Talk talk = new Talk(eventId);
-
-        response = given().header("Content-Type", "application/json")
-                .body(talk.toString())
-                .cookie("connect.sid", userSessionCookie).post("v1/talk");
-
-        response.prettyPrint();
-
-        Assert.assertEquals(403, response.getStatusCode());
-    }
     @Test
     public void testAdminPostTalkWhenEventIsInvalid() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -143,7 +144,7 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        response.getBody().prettyPrint();
+
 
         Assert.assertEquals(404, response.getStatusCode());
     }
@@ -160,9 +161,11 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        response.getBody().prettyPrint();
+
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EVENT_NAME));
 
     }
 
@@ -178,9 +181,11 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        response.getBody().prettyPrint();
+
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_DATE));
     }
 
     @Test
@@ -195,13 +200,16 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        response.getBody().prettyPrint();
+
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EVENT_NAME));
     }
 
     @Test
-    public void tesAdmintPostTalkWhenEventDoNotBelongToSpecificAdmin() throws JSONException {
+    public void testAdminPostTalkWhenEventDoNotBelongToSpecificAdmin() throws JSONException {
         String firstAdminSessionCookie = createUserCookie(UserType.ADMIN);
         String secondAdminSessionCookie = createUserCookie(UserType.ADMIN);
         String eventId = createEvent(firstAdminSessionCookie).get("_id");
@@ -212,7 +220,6 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", secondAdminSessionCookie).post("v1/talk");
 
-        response.getBody().prettyPrint();
         Assert.assertEquals( 403, response.getStatusCode());
     }
 
@@ -228,9 +235,12 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        response.getBody().prettyPrint();
+
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
+
     }
 
     @Test
@@ -248,9 +258,12 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        response.getBody().prettyPrint();
+
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_DATE));
+
     }
 
     @Test
@@ -265,15 +278,18 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-        response.getBody().prettyPrint();
+
 
         Assert.assertEquals(201, response.getStatusCode());
     }
     //todo testy get /talk
 
+
     @Test
-    public void testAdminGetTalk() throws JSONException {
+    public void testUserGetTalk() throws JSONException {
+        String userSessionCookie = createUserCookie(UserType.USER);
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
+
         String eventId = createEvent(adminSessionCookie).get("_id");
         String firstTitle = RandomStringUtils.randomAlphabetic(10);
 
@@ -290,7 +306,7 @@ public class TalkTests extends FunctionalTest {
 
         /*Tutaj robię dopiero get*/
 
-        response = given().cookie("connect.sid", adminSessionCookie).get("v1/talk/" + talkId);
+        response = given().cookie("connect.sid", userSessionCookie).get("v1/talk/" + talkId);
 
         Assert.assertEquals(200, response.getStatusCode());
 
@@ -331,11 +347,10 @@ public class TalkTests extends FunctionalTest {
         Assert.assertEquals(firstTitle, secondTitle);
     }
 
-    @Test
-    public void testUserGetTalk() throws JSONException {
-        String userSessionCookie = createUserCookie(UserType.USER);
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
+    @Test
+    public void testAdminGetTalk() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String eventId = createEvent(adminSessionCookie).get("_id");
         String firstTitle = RandomStringUtils.randomAlphabetic(10);
 
@@ -352,7 +367,36 @@ public class TalkTests extends FunctionalTest {
 
         /*Tutaj robię dopiero get*/
 
-        response = given().cookie("connect.sid", userSessionCookie).get("v1/talk/" + talkId);
+        response = given().cookie("connect.sid", adminSessionCookie).get("v1/talk/" + talkId);
+
+        Assert.assertEquals(200, response.getStatusCode());
+
+        JsonPath secondJsonPath = response.jsonPath();
+        String secondTitle = secondJsonPath.get("title");
+
+        Assert.assertEquals(firstTitle, secondTitle);
+    }
+
+    @Test
+    public void testSuperAdminGetTalk() throws JSONException {
+        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
+        String eventId = createEvent(superAdminSessionCookie).get("_id");
+        String firstTitle = RandomStringUtils.randomAlphabetic(10);
+
+        Talk talk = new Talk(eventId, firstTitle);
+
+        response = given().header("Content-Type", "application/json")
+                .body(talk.toString())
+                .cookie("connect.sid", superAdminSessionCookie).post("v1/talk");
+
+        Assert.assertEquals(201, response.getStatusCode());
+        JsonPath firstJsonPath = response.jsonPath();
+
+        String talkId = firstJsonPath.get("_id");
+
+        /*Tutaj robię dopiero get*/
+
+        response = given().cookie("connect.sid", superAdminSessionCookie).get("v1/talk/" + talkId);
 
         Assert.assertEquals(200, response.getStatusCode());
 
@@ -363,6 +407,68 @@ public class TalkTests extends FunctionalTest {
     }
 
     //todo testy patch /talk
+
+    @Test
+    public void testUserPatchTalk() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String userSessionCookie = createUserCookie(UserType.USER);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+
+        Talk talk = new Talk(eventId);
+
+        response = given().header("Content-Type", "application/json")
+                .body(talk.toString())
+                .cookie("connect.sid", adminSessionCookie).post("v1/talk");
+
+        Assert.assertEquals(201, response.getStatusCode());
+        JsonPath jsonPath = response.jsonPath();
+        String talkId = jsonPath.get("_id");
+
+        //patch
+        JSONObject object = new JSONObject();
+        String newTitle = RandomStringUtils.randomAlphabetic(8);
+        object.put("title", newTitle);
+
+
+        System.out.println(newTitle);
+        response = given().header("Content-Type", "application/json")
+                .body(object.toString())
+                .cookie("connect.sid", userSessionCookie).patch("v1/talk/" + talkId);
+
+        Assert.assertEquals(403, response.getStatusCode());
+
+    }
+
+    @Test
+    public void testSpeakerPatchTalk() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+
+        Talk talk = new Talk(eventId);
+
+        response = given().header("Content-Type", "application/json")
+                .body(talk.toString())
+                .cookie("connect.sid", adminSessionCookie).post("v1/talk");
+
+        Assert.assertEquals(201, response.getStatusCode());
+        JsonPath jsonPath = response.jsonPath();
+        String talkId = jsonPath.get("_id");
+
+        //patch
+        JSONObject object = new JSONObject();
+        String newTitle = RandomStringUtils.randomAlphabetic(8);
+        object.put("title", newTitle);
+
+
+        System.out.println(newTitle);
+        response = given().header("Content-Type", "application/json")
+                .body(object.toString())
+                .cookie("connect.sid", speakerSessionCookie).patch("v1/talk/" + talkId);
+
+        Assert.assertEquals(403, response.getStatusCode());
+
+    }
 
     @Test
     public void testAdminPatchTalk() throws JSONException {
@@ -438,68 +544,50 @@ public class TalkTests extends FunctionalTest {
         Assert.assertEquals(200, response.getStatusCode());
     }
 
-    @Test
-    public void testSpeakerPatchTalk() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
-        String eventId = createEvent(adminSessionCookie).get("_id");
-
-        Talk talk = new Talk(eventId);
-
-        response = given().header("Content-Type", "application/json")
-                .body(talk.toString())
-                .cookie("connect.sid", adminSessionCookie).post("v1/talk");
-
-        Assert.assertEquals(201, response.getStatusCode());
-        JsonPath jsonPath = response.jsonPath();
-        String talkId = jsonPath.get("_id");
-
-        //patch
-        JSONObject object = new JSONObject();
-        String newTitle = RandomStringUtils.randomAlphabetic(8);
-        object.put("title", newTitle);
-
-
-        System.out.println(newTitle);
-        response = given().header("Content-Type", "application/json")
-                .body(object.toString())
-                .cookie("connect.sid", speakerSessionCookie).patch("v1/talk/" + talkId);
-
-        Assert.assertEquals(403, response.getStatusCode());
-        
-    }
-
-    @Test
-    public void testUserPatchTalk() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String userSessionCookie = createUserCookie(UserType.USER);
-        String eventId = createEvent(adminSessionCookie).get("_id");
-
-        Talk talk = new Talk(eventId);
-
-        response = given().header("Content-Type", "application/json")
-                .body(talk.toString())
-                .cookie("connect.sid", adminSessionCookie).post("v1/talk");
-
-        Assert.assertEquals(201, response.getStatusCode());
-        JsonPath jsonPath = response.jsonPath();
-        String talkId = jsonPath.get("_id");
-
-        //patch
-        JSONObject object = new JSONObject();
-        String newTitle = RandomStringUtils.randomAlphabetic(8);
-        object.put("title", newTitle);
-
-
-        System.out.println(newTitle);
-        response = given().header("Content-Type", "application/json")
-                .body(object.toString())
-                .cookie("connect.sid", userSessionCookie).patch("v1/talk/" + talkId);
-
-        Assert.assertEquals(403, response.getStatusCode());
-
-    }
     //todo testy delete /talk
+    @Test
+    public void testUserDeleteTalk() throws JSONException {
+        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
+        String userSessionCookie = createUserCookie(UserType.USER);
+        String eventId = createEvent(superAdminSessionCookie).get("_id");
+
+        Talk talk = new Talk(eventId);
+
+        response = given().header("Content-Type", "application/json")
+                .body(talk.toString())
+                .cookie("connect.sid", superAdminSessionCookie).post("v1/talk");
+
+        Assert.assertEquals(201, response.getStatusCode());
+        JsonPath jsonPath = response.jsonPath();
+
+        String talkId = jsonPath.get("_id");
+
+        //delete
+        response = given().cookie("connect.sid", userSessionCookie).delete("v1/talk/" + talkId);
+        Assert.assertEquals(403, response.getStatusCode());
+    }
+
+    @Test
+    public void testSpeakerDeleteTalk() throws JSONException {
+        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
+        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
+        String eventId = createEvent(superAdminSessionCookie).get("_id");
+
+        Talk talk = new Talk(eventId);
+
+        response = given().header("Content-Type", "application/json")
+                .body(talk.toString())
+                .cookie("connect.sid", superAdminSessionCookie).post("v1/talk");
+
+        Assert.assertEquals(201, response.getStatusCode());
+        JsonPath jsonPath = response.jsonPath();
+
+        String talkId = jsonPath.get("_id");
+
+        //delete
+        response = given().cookie("connect.sid", speakerSessionCookie).delete("v1/talk/" + talkId);
+        Assert.assertEquals(403, response.getStatusCode());
+    }
 
     @Test
     public void testAdminDeleteTalk() throws JSONException {
@@ -551,47 +639,7 @@ public class TalkTests extends FunctionalTest {
         Assert.assertEquals(404, response.getStatusCode());
     }
 
-    @Test
-    public void testSpeakerDeleteTalk() throws JSONException {
-        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
-        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
-        String eventId = createEvent(superAdminSessionCookie).get("_id");
 
-        Talk talk = new Talk(eventId);
 
-        response = given().header("Content-Type", "application/json")
-                .body(talk.toString())
-                .cookie("connect.sid", superAdminSessionCookie).post("v1/talk");
 
-        Assert.assertEquals(201, response.getStatusCode());
-        JsonPath jsonPath = response.jsonPath();
-
-        String talkId = jsonPath.get("_id");
-
-        //delete
-        response = given().cookie("connect.sid", speakerSessionCookie).delete("v1/talk/" + talkId);
-        Assert.assertEquals(403, response.getStatusCode());
-    }
-
-    @Test
-    public void testUserDeleteTalk() throws JSONException {
-        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
-        String userSessionCookie = createUserCookie(UserType.USER);
-        String eventId = createEvent(superAdminSessionCookie).get("_id");
-
-        Talk talk = new Talk(eventId);
-
-        response = given().header("Content-Type", "application/json")
-                .body(talk.toString())
-                .cookie("connect.sid", superAdminSessionCookie).post("v1/talk");
-
-        Assert.assertEquals(201, response.getStatusCode());
-        JsonPath jsonPath = response.jsonPath();
-
-        String talkId = jsonPath.get("_id");
-
-        //delete
-        response = given().cookie("connect.sid", userSessionCookie).delete("v1/talk/" + talkId);
-        Assert.assertEquals(403, response.getStatusCode());
-    }
 }

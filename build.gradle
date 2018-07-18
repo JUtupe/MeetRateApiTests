@@ -14,4 +14,6 @@ dependencies {
     testCompile 'io.rest-assured:rest-assured:3.1.0'
     compile group: 'org.json', name: 'json', version: '20090211'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
+
 }

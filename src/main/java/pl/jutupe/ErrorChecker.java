@@ -3,7 +3,6 @@ package pl.jutupe;
 import io.restassured.path.json.JsonPath;
 import org.junit.Assert;
 import pl.jutupe.enums.ErrorType;
-import pl.jutupe.exceptions.BadJsonPathException;
 import pl.jutupe.object.Errors;
 
 import java.util.List;
@@ -15,6 +14,7 @@ class ErrorChecker {
         try {
             this.errors = jsonPath.getList("errors", Errors.class);
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail(Constants.ERROR_CHECKER_BAD_JSONPATH);
         }
     }
