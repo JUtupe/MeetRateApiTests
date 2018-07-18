@@ -26,7 +26,6 @@ public class QuestionTests extends FunctionalTest {
                 .body(object.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/question/talk/" + talkId);
         Assert.assertEquals(201, response.getStatusCode());
-
     }
     @Test
     public void testSuperAdminPostQuestionForTalk() throws JSONException {
@@ -129,5 +128,4 @@ public class QuestionTests extends FunctionalTest {
                 .cookie("connect.sid", superAdminSessionCookie).post("v1/question/talk/" + talkId);
         Assert.assertEquals(400, response.getStatusCode());
     }
-
 }

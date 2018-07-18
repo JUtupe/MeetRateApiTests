@@ -2,23 +2,32 @@ package pl.jutupe.object;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import pl.jutupe.Constants;
 
 public class Location {
     private String city;
     private String place;
-    private Double lat;
-    private Double lng;
+    private String lat;
+    private String lng;
 
     private JSONObject object;
 
     //todo losowe
-    Location() throws JSONException {
-        city = "Zarow";
-        place = "placyk";
+    public Location() throws JSONException {
+        object = new JSONObject();
 
-        lat = 1.434;
-        lng = 2.4324;
+        city = Constants.LOCATION_VALID_CITY;
+        place = Constants.LOCATION_VALID_PLACE;
+        lat = Constants.LOCATION_VALID_LAT;
+        lng = Constants.LOCATION_VALID_LNG;
 
+        object.put("city", city);
+        object.put("place", place);
+        object.put("lat", lat);
+        object.put("lng", lng);
+    }
+
+    public Location(String city, String place, String lat, String lng) throws JSONException {
         object = new JSONObject();
 
         object.put("city", city);
@@ -31,11 +40,11 @@ public class Location {
         return object;
     }
 
-    public Double getLng() {
+    public String getLng() {
         return lng;
     }
 
-    public Double getLat() {
+    public String getLat() {
         return lat;
     }
 

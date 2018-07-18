@@ -3,9 +3,7 @@ package pl.jutupe;
 import io.restassured.path.json.JsonPath;
 import org.junit.Assert;
 import pl.jutupe.enums.ErrorType;
-import pl.jutupe.exceptions.BadJsonPathException;
 import pl.jutupe.object.Errors;
-
 import java.util.List;
 
 class ErrorChecker {

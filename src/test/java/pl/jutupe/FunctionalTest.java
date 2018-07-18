@@ -25,7 +25,7 @@ public class FunctionalTest {
         //RestAssured.port = 80;
         RestAssured.port = 3000;
 
-        ADMIN_SESSION_COOKIE = given().header("email", "co@co.pl").header("password_hash", "start123")
+        ADMIN_SESSION_COOKIE = given().header("email", "co@co.pl").header("password_hash", "$2b$10$7ZJiNXvnViGJoiJcxGzAAOiBi7lnUcsdKUG6pJ5m8VtzuFNTEj3P.")
                 .when().get("v1/login")
                 .then().extract().cookie("connect.sid");
     }

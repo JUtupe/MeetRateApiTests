@@ -6,9 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import pl.jutupe.enums.ErrorType;
 import pl.jutupe.object.Event;
 import pl.jutupe.enums.UserType;
-
 import static io.restassured.RestAssured.given;
 
 public class EventTests extends FunctionalTest {
@@ -41,6 +41,9 @@ public class EventTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EVENT_NAME));
     }
 
     @Test
@@ -57,6 +60,9 @@ public class EventTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_INFO));
     }
 
     @Test

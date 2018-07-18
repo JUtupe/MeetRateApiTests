@@ -24,7 +24,6 @@ public class Date {
 
         object.put("start", start);
         object.put("end", end);
-
     }
 
     public JSONObject getObject() {

@@ -6,9 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import pl.jutupe.enums.ErrorType;
 import pl.jutupe.object.User;
 import pl.jutupe.enums.UserType;
-
 import static io.restassured.RestAssured.*;
 
 
@@ -55,6 +55,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_ACCOUNT_TYPE));
     }
 
     @Test
@@ -68,6 +71,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_ACCOUNT_TYPE));
     }
 
     @Test
@@ -81,6 +87,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_ACCOUNT_TYPE));
     }
 
     @Test
@@ -97,6 +106,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
     }
 
     @Test
@@ -114,6 +126,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
     }
 
     @Test
@@ -130,6 +145,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
     }
 
     @Test
@@ -146,6 +164,10 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EMAIL));
     }
 
     @Test
@@ -162,6 +184,10 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
     }
 
     @Test
@@ -178,6 +204,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EMAIL));
     }
 
     @Test
@@ -194,6 +223,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
     }
 
     @Test
@@ -208,6 +240,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
     }
 
     @Test
@@ -222,6 +257,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
     }
 
     @Test
@@ -237,6 +275,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EMAIL));
     }
 
     @Test
@@ -252,6 +293,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EMAIL));
     }
 
     @Test
@@ -295,6 +339,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
     }
 
     @Test
@@ -311,6 +358,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", adminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EMAIL));
     }
 
     @Test
@@ -324,6 +374,9 @@ public class UserTests extends FunctionalTest {
                 .cookie("connect.sid", superAdminCookie).when().post("v1/user");
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_ACCOUNT_TYPE));
     }
 
     @Test
@@ -371,6 +424,9 @@ public class UserTests extends FunctionalTest {
         response.prettyPrint();
 
         Assert.assertEquals(400, response.getStatusCode());
+
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_ACCOUNT_TYPE));
     }
 
     @Test
@@ -534,8 +590,8 @@ public class UserTests extends FunctionalTest {
     }
 
     //PATCH
-
     //todo każdy parametr
+
     @Test
     public void testPatchSpeaker() throws JSONException {
         //post speaker
@@ -651,7 +707,7 @@ public class UserTests extends FunctionalTest {
 
         Assert.assertEquals(200, response.getStatusCode());
     }
-    //todo każdy parametr
+
     @Test
     public void testUserPatchSpeaker() throws JSONException {
         String adminCookie = createUserCookie(UserType.ADMIN);
@@ -680,7 +736,6 @@ public class UserTests extends FunctionalTest {
         Assert.assertEquals(403, response.getStatusCode());
     }
 
-    //todo każdy parametr
     @Test
     public void testAdminPatchSpeaker() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
