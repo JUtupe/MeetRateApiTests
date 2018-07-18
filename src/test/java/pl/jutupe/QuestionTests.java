@@ -11,8 +11,8 @@ import static io.restassured.RestAssured.*;
 
 public class QuestionTests extends FunctionalTest {
 
-    //todo testy post /question
-
+    //POST
+    //todo test post na usunięty talk
     @Test
     public void testUserPostQuestionForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);

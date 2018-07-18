@@ -11,10 +11,10 @@ import pl.jutupe.enums.UserType;
 
 import static io.restassured.RestAssured.*;
 
-
 public class FeedbackTests extends FunctionalTest {
 
-    //todo Feedback for event
+    //POST EVENT
+    //todo testy na usunięty event
 
     @Test
     public void testUserPostFeedbackForEvent() throws JSONException {
@@ -128,25 +128,21 @@ public class FeedbackTests extends FunctionalTest {
 
 
     @Test
-    public void testAdminPostFeedbackForEventWhenContentIsEmpty() throws JSONException {
+    public void testAdminPostFeedbackForEventWhenContentIsNull() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String eventId = createEvent(adminSessionCookie).get("_id");
-        String content = "";
         String rating = "1";
 
-        Feedback feedback = new Feedback(rating,content);
+        Feedback feedback = new Feedback(rating, null);
 
         response = given().header("Content-Type", "application/json")
                 .body(feedback.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
 
-        Assert.assertEquals(400, response.getStatusCode());
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING_CONTENT));
+        Assert.assertEquals(201, response.getStatusCode());
     }
 
-    //todo feedback for talk
-
+    //POST TALK
 
     @Test
     public void testUserPostFeedbackForTalk() throws JSONException {
@@ -209,18 +205,16 @@ public class FeedbackTests extends FunctionalTest {
     @Test
     public void testAdminPostFeedbackForTalkWhenRatingIsInvalid() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String eventId = createEvent(adminSessionCookie).get("_id");
+        String talkId = createTalk(adminSessionCookie).get("_id");
         String rating = "5";
 
         Feedback feedback = new Feedback(rating);
 
         response = given().header("Content-Type", "application/json")
                 .body(feedback.toString())
-                .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
+                .cookie("connect.sid", adminSessionCookie).post("v1/feedback/talk/" + talkId);
 
         Assert.assertEquals(400, response.getStatusCode());
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING));
     }
   
     @Test
@@ -243,24 +237,20 @@ public class FeedbackTests extends FunctionalTest {
     }
 
     @Test
-    public void testAdminPostFeedbackForTooWhenContentIsEmpty() throws JSONException {
+    public void testAdminPostFeedbackForTalkWhenContentIsNull() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String eventId = createEvent(adminSessionCookie).get("_id");
-        String content = "";
+        String talkId = createTalk(adminSessionCookie).get("_id");
         String rating = "1";
 
-        Feedback feedback = new Feedback(rating,content);
+        Feedback feedback = new Feedback(rating, null);
 
         response = given().header("Content-Type", "application/json")
                 .body(feedback.toString())
-                .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
+                .cookie("connect.sid", adminSessionCookie).post("v1/feedback/talk/" + talkId);
 
-        Assert.assertEquals(400, response.getStatusCode());
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING_CONTENT));
+        Assert.assertEquals(201, response.getStatusCode());
     }
 
-    //todo test get /feedback
     @Test
     public void testAdminGetFeedback() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -279,7 +269,5 @@ public class FeedbackTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).get("v1/event/" + eventId);
 
         Assert.assertEquals(200, response.getStatusCode());
-
-
     }
 }

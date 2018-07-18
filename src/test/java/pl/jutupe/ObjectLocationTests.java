@@ -17,6 +17,8 @@ public class ObjectLocationTests extends FunctionalTest{
     private String validCity = Constants.LOCATION_VALID_CITY;
     private String validPlace = Constants.LOCATION_VALID_PLACE;
 
+    //POST
+
     @Test
     public void testPostValidLocation() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -70,7 +72,7 @@ public class ObjectLocationTests extends FunctionalTest{
     }
 
     @Test
-    public void testPostTooBigCityPlace() throws JSONException {
+    public void testPostTooBigPlaceLocation() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String place = RandomStringUtils.randomAlphabetic(10000);
 

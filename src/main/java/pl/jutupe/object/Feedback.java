@@ -12,8 +12,8 @@ public class Feedback {
     public Feedback() throws JSONException {
         object = new JSONObject();
 
-        content = RandomStringUtils.randomAlphabetic(30);
-        rating = "1";
+        this.content = RandomStringUtils.randomAlphabetic(30);
+        this.rating = "1";
 
         object.put("content", content);
         object.put("rating", rating);
@@ -21,14 +21,19 @@ public class Feedback {
 
     public Feedback(String rating) throws JSONException {
         object = new JSONObject();
-        content = RandomStringUtils.randomAlphabetic(30);
+
+        this.content = RandomStringUtils.randomAlphabetic(30);
+        this.rating = rating;
 
         object.put("content", content);
         object.put("rating", rating);
     }
 
-    public  Feedback(String rating, String content) throws JSONException {
+    public Feedback(String rating, String content) throws JSONException {
         object = new JSONObject();
+
+        this.rating = rating;
+        this.content = content;
 
         object.put("content", content);
         object.put("rating", rating);

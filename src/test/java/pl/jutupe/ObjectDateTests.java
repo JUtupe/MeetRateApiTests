@@ -15,6 +15,8 @@ import static io.restassured.RestAssured.given;
  */
 public class ObjectDateTests extends FunctionalTest {
 
+    //POST
+
     @Test
     public void testPostValidDate() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
