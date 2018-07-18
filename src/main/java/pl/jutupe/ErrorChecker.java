@@ -13,6 +13,7 @@ class ErrorChecker {
         try {
             this.errors = jsonPath.getList("errors", Errors.class);
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail(Constants.ERROR_CHECKER_BAD_JSONPATH);
         }
     }

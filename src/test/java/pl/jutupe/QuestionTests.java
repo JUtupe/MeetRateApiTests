@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import pl.jutupe.enums.ErrorType;
 import pl.jutupe.enums.UserType;
 import static io.restassured.RestAssured.*;
 
@@ -13,8 +14,9 @@ public class QuestionTests extends FunctionalTest {
     //todo testy post /question
 
     @Test
-    public void testAdminPostQuestionForTalk() throws JSONException {
+    public void testUserPostQuestionForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String userSessionCookie = createUserCookie(UserType.USER);
         String talkId = createTalk(adminSessionCookie).get("_id");
 
         String question = RandomStringUtils.randomAlphabetic(30);
@@ -24,25 +26,10 @@ public class QuestionTests extends FunctionalTest {
 
         response = given().header("Content-Type", "application/json")
                 .body(object.toString())
-                .cookie("connect.sid", adminSessionCookie).post("v1/question/talk/" + talkId);
+                .cookie("connect.sid", userSessionCookie).post("v1/question/talk/" + talkId);
         Assert.assertEquals(201, response.getStatusCode());
     }
-    @Test
-    public void testSuperAdminPostQuestionForTalk() throws JSONException {
-        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
-        String talkId = createTalk(superAdminSessionCookie).get("_id");
 
-        String question = RandomStringUtils.randomAlphabetic(30);
-
-        JSONObject object = new JSONObject();
-        object.put("question", question);
-
-        response = given().header("Content-Type", "application/json")
-                .body(object.toString())
-                .cookie("connect.sid", superAdminSessionCookie).post("v1/question/talk/" + talkId);
-        Assert.assertEquals(201, response.getStatusCode());
-
-    }
     @Test
     public void testSpeakerPostQuestionForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -62,9 +49,8 @@ public class QuestionTests extends FunctionalTest {
     }
 
     @Test
-    public void testUserPostQuestionForTalk() throws JSONException {
+    public void testAdminPostQuestionForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String userSessionCookie = createUserCookie(UserType.USER);
         String talkId = createTalk(adminSessionCookie).get("_id");
 
         String question = RandomStringUtils.randomAlphabetic(30);
@@ -74,7 +60,24 @@ public class QuestionTests extends FunctionalTest {
 
         response = given().header("Content-Type", "application/json")
                 .body(object.toString())
-                .cookie("connect.sid", userSessionCookie).post("v1/question/talk/" + talkId);
+                .cookie("connect.sid", adminSessionCookie).post("v1/question/talk/" + talkId);
+        Assert.assertEquals(201, response.getStatusCode());
+
+    }
+
+    @Test
+    public void testSuperAdminPostQuestionForTalk() throws JSONException {
+        String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
+        String talkId = createTalk(superAdminSessionCookie).get("_id");
+
+        String question = RandomStringUtils.randomAlphabetic(30);
+
+        JSONObject object = new JSONObject();
+        object.put("question", question);
+
+        response = given().header("Content-Type", "application/json")
+                .body(object.toString())
+                .cookie("connect.sid", superAdminSessionCookie).post("v1/question/talk/" + talkId);
         Assert.assertEquals(201, response.getStatusCode());
 
     }
@@ -93,6 +96,8 @@ public class QuestionTests extends FunctionalTest {
                 .body(object.toString())
                 .cookie("connect.sid", superAdminSessionCookie).post("v1/question/talk/" + talkId);
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_QUESTION));
 
     }
 
@@ -127,5 +132,7 @@ public class QuestionTests extends FunctionalTest {
                 .body(object.toString())
                 .cookie("connect.sid", superAdminSessionCookie).post("v1/question/talk/" + talkId);
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_QUESTION));
     }
 }
