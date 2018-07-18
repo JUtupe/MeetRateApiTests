@@ -40,7 +40,7 @@ public class Event {
 
         object.put("name", name);
         object.put("img", "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==");
-        object.put("date", date);
+        object.put("date", date.getObject());
         object.put("location", new Location().getObject());
         object.put("info", info);
     }

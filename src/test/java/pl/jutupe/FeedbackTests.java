@@ -14,6 +14,38 @@ import static io.restassured.RestAssured.*;
 
 public class FeedbackTests extends FunctionalTest {
 
+    //todo Feedback for event
+
+    @Test
+    public void testUserPostFeedbackForEvent() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String userSessionCookie = createUserCookie(UserType.USER);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+
+        Feedback feedback = new Feedback();
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", userSessionCookie).post("v1/feedback/event/" + eventId);
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+
+    @Test
+    public void testSpeakerPostFeedbackForEvent() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
+        String eventId = createEvent(adminSessionCookie).get("_id");
+
+        Feedback feedback = new Feedback();
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", speakerSessionCookie).post("v1/feedback/event/" + eventId);
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+
     @Test
     public void testAdminPostFeedbackForEvent() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -41,35 +73,6 @@ public class FeedbackTests extends FunctionalTest {
 
         Assert.assertEquals(201, response.getStatusCode());
     }
-    @Test
-    public void testSpeakerPostFeedbackForEvent() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
-        String eventId = createEvent(adminSessionCookie).get("_id");
-
-        Feedback feedback = new Feedback();
-
-        response = given().header("Content-Type", "application/json")
-                .body(feedback.toString())
-                .cookie("connect.sid", speakerSessionCookie).post("v1/feedback/event/" + eventId);
-
-        Assert.assertEquals(201, response.getStatusCode());
-    }
-
-    @Test
-    public void testUserPostFeedbackForEvent() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String userSessionCookie = createUserCookie(UserType.USER);
-        String eventId = createEvent(adminSessionCookie).get("_id");
-
-        Feedback feedback = new Feedback();
-
-        response = given().header("Content-Type", "application/json")
-                .body(feedback.toString())
-                .cookie("connect.sid", userSessionCookie).post("v1/feedback/event/" + eventId);
-
-        Assert.assertEquals(201, response.getStatusCode());
-    }
 
     @Test
     public void testAdminPostFeedbackForEventWhenRatingIsInvalid() throws JSONException {
@@ -84,6 +87,8 @@ public class FeedbackTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING));
     }
 
     @Test
@@ -116,6 +121,9 @@ public class FeedbackTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING_CONTENT));
+
     }
 
 
@@ -133,9 +141,44 @@ public class FeedbackTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING_CONTENT));
     }
 
-   @Test
+    //todo feedback for talk
+
+
+    @Test
+    public void testUserPostFeedbackForTalk() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String userSessionCookie = createUserCookie(UserType.USER);
+        String talkId = createTalk(adminSessionCookie).get("_id");
+
+        Feedback feedback = new Feedback();
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", userSessionCookie).post("v1/feedback/talk/" + talkId);
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+
+    @Test
+    public void testSpeakerPostFeedbackForTalk() throws JSONException {
+        String adminSessionCookie = createUserCookie(UserType.ADMIN);
+        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
+        String talkId = createTalk(adminSessionCookie).get("_id");
+
+        Feedback feedback = new Feedback();
+
+        response = given().header("Content-Type", "application/json")
+                .body(feedback.toString())
+                .cookie("connect.sid", speakerSessionCookie).post("v1/feedback/talk/" + talkId);
+
+        Assert.assertEquals(201, response.getStatusCode());
+    }
+
+    @Test
     public void testAdminPostFeedbackForTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String talkId = createTalk(adminSessionCookie).get("_id");
@@ -162,36 +205,7 @@ public class FeedbackTests extends FunctionalTest {
 
         Assert.assertEquals(201, response.getStatusCode());
     }
-    @Test
-    public void testSpeakerPostFeedbackForTalk() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
-        String talkId = createTalk(adminSessionCookie).get("_id");
 
-        Feedback feedback = new Feedback();
-
-        response = given().header("Content-Type", "application/json")
-                .body(feedback.toString())
-                .cookie("connect.sid", speakerSessionCookie).post("v1/feedback/talk/" + talkId);
-
-        Assert.assertEquals(201, response.getStatusCode());
-    }
-
-    @Test
-    public void testUserPostFeedbackForTalk() throws JSONException {
-        String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String userSessionCookie = createUserCookie(UserType.USER);
-        String talkId = createTalk(adminSessionCookie).get("_id");
-
-        Feedback feedback = new Feedback();
-
-        response = given().header("Content-Type", "application/json")
-                .body(feedback.toString())
-                .cookie("connect.sid", userSessionCookie).post("v1/feedback/talk/" + talkId);
-
-        Assert.assertEquals(201, response.getStatusCode());
-    }
-  
     @Test
     public void testAdminPostFeedbackForTalkWhenRatingIsInvalid() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -205,6 +219,8 @@ public class FeedbackTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING));
     }
   
     @Test
@@ -222,6 +238,8 @@ public class FeedbackTests extends FunctionalTest {
                 .cookie("connect.sid", userSessionCookie).post("v1/feedback/talk/" + talkId);
 
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
+        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING_CONTENT));
     }
 
     @Test
@@ -237,12 +255,12 @@ public class FeedbackTests extends FunctionalTest {
                 .body(feedback.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/feedback/event/" + eventId);
 
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
         Assert.assertEquals(400, response.getStatusCode());
+        ErrorChecker checker = new ErrorChecker(response.jsonPath());
         Assert.assertTrue(checker.checkForError(ErrorType.INVALID_RATING_CONTENT));
     }
-    //todo test get /feedback
 
+    //todo test get /feedback
     @Test
     public void testAdminGetFeedback() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
@@ -262,6 +280,6 @@ public class FeedbackTests extends FunctionalTest {
 
         Assert.assertEquals(200, response.getStatusCode());
 
-        response.prettyPrint();
+
     }
 }

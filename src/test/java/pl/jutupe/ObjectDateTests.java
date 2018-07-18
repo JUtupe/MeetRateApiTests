@@ -27,6 +27,8 @@ public class ObjectDateTests extends FunctionalTest {
                 .body(event.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
+        response.prettyPrint();
+
         Assert.assertEquals(400, response.getStatusCode());
 
         ErrorChecker checker = new ErrorChecker(response.jsonPath());

@@ -5,6 +5,9 @@ public class Errors {
     private Integer code;
     private String message;
 
+    public Errors() {
+    }
+
     public Errors(Integer code, String message) {
         this.code = code;
         this.message = message;
