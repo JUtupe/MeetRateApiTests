@@ -28,7 +28,6 @@ public class QuestionTests extends FunctionalTest {
                 .body(object.toString())
                 .cookie("connect.sid", userSessionCookie).post("v1/question/talk/" + talkId);
         Assert.assertEquals(201, response.getStatusCode());
-
     }
 
     @Test
@@ -136,5 +135,4 @@ public class QuestionTests extends FunctionalTest {
         ErrorChecker checker = new ErrorChecker(response.jsonPath());
         Assert.assertTrue(checker.checkForError(ErrorType.INVALID_QUESTION));
     }
-
 }
