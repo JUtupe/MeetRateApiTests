@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
-import pl.jutupe.enums.ErrorType;
 import pl.jutupe.object.Event;
 import pl.jutupe.enums.UserType;
 import static io.restassured.RestAssured.given;
@@ -31,7 +30,7 @@ public class EventTests extends FunctionalTest {
     public void testAdminPostEventWithTooBigName() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
-        String name = RandomStringUtils.randomAlphabetic(10000);
+        String name = RandomStringUtils.randomAlphabetic(101);
         String info = RandomStringUtils.randomAlphabetic(30);
 
         Event event = new Event(name, info);
@@ -41,9 +40,6 @@ public class EventTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
         Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EVENT_NAME));
     }
 
     @Test
@@ -60,9 +56,6 @@ public class EventTests extends FunctionalTest {
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
         Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_INFO));
     }
 
     @Test
@@ -125,7 +118,6 @@ public class EventTests extends FunctionalTest {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         JsonPath eventJson = createEvent(adminSessionCookie);
         String eventId = eventJson.get("_id");
-        String oldName = eventJson.get("name");
 
         String newName = RandomStringUtils.randomAlphabetic(8);
 
@@ -139,7 +131,7 @@ public class EventTests extends FunctionalTest {
         Assert.assertEquals(200, response.getStatusCode());
 
         JsonPath responseJson = response.jsonPath();
-        Assert.assertEquals(oldName, responseJson.get("name"));
+        Assert.assertEquals(newName, responseJson.get("name"));
     }
 
     @Test
@@ -161,7 +153,7 @@ public class EventTests extends FunctionalTest {
         Assert.assertEquals(200, response.getStatusCode());
 
         JsonPath responseJson = response.jsonPath();
-        Assert.assertEquals(oldName, responseJson.get("name"));
+        Assert.assertEquals(newName, responseJson.get("name"));
     }
 
     //DELETE

@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.json.JSONException;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import pl.jutupe.object.Event;
 import pl.jutupe.object.Talk;
@@ -65,6 +66,7 @@ public class FunctionalTest {
         response = given().header("Content-Type", "application/json")
                 .body(talk.toString())
                 .cookie("connect.sid", sessionCookie).post("v1/talk");
+        Assert.assertEquals(201, response.getStatusCode());
 
         return response.jsonPath();
     }

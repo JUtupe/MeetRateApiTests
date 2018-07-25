@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
-import pl.jutupe.enums.ErrorType;
 import pl.jutupe.object.Date;
 import pl.jutupe.object.Talk;
 import pl.jutupe.enums.UserType;
@@ -18,7 +17,7 @@ public class TalkTests extends FunctionalTest {
     //POST
 
     @Test
-    public void  testAdminGetTalkWhenEventIsDeleted() throws JSONException {
+    public void testAdminGetTalkWhenEventIsDeleted() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String eventId = createEvent(adminSessionCookie).get("_id");
 
@@ -41,12 +40,12 @@ public class TalkTests extends FunctionalTest {
 
 
         response = given().cookie("connect.sid", adminSessionCookie).get("v1/talk/" + talkId);
-        Assert.assertEquals(200, response.getStatusCode());
+        Assert.assertEquals(404, response.getStatusCode());
 
     }
 
     @Test
-    public void  testAdminPostTalkWhenEventIsDeleted() throws JSONException {
+    public void testAdminPostTalkWhenEventIsDeleted() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
         String eventId = createEvent(adminSessionCookie).get("_id");
@@ -68,7 +67,7 @@ public class TalkTests extends FunctionalTest {
     }
 
     @Test
-    public void  testUserPostTalk() throws JSONException {
+    public void testUserPostTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String userSessionCookie = createUserCookie(UserType.USER);
         String eventId = createEvent(adminSessionCookie).get("_id");
@@ -83,7 +82,7 @@ public class TalkTests extends FunctionalTest {
     }
 
     @Test
-    public void  testSpeakerPostTalk() throws JSONException {
+    public void testSpeakerPostTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String speakerSessionCookie = createUserCookie(UserType.SPEAKER);
         String eventId = createEvent(adminSessionCookie).get("_id");
@@ -99,7 +98,7 @@ public class TalkTests extends FunctionalTest {
     }
 
     @Test
-    public void  testAdminPostTalk() throws JSONException {
+    public void testAdminPostTalk() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
 
         String eventId = createEvent(adminSessionCookie).get("_id");
@@ -109,13 +108,11 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-
-
         Assert.assertEquals(201, response.getStatusCode());
     }
 
     @Test
-    public void  testSuperAdminPostTalk() throws JSONException {
+    public void testSuperAdminPostTalk() throws JSONException {
         String superAdminSessionCookie = createUserCookie(UserType.SUPER_ADMIN);
 
         String eventId = createEvent(superAdminSessionCookie).get("_id");
@@ -158,12 +155,7 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-
-
         Assert.assertEquals(400, response.getStatusCode());
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EVENT_NAME));
-
     }
 
     @Test
@@ -178,11 +170,7 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-
-
         Assert.assertEquals(400, response.getStatusCode());
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_DATE));
     }
 
     @Test
@@ -197,12 +185,7 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-
-
-        Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_EVENT_NAME));
+        Assert.assertEquals(201, response.getStatusCode());
     }
 
     @Test
@@ -232,12 +215,7 @@ public class TalkTests extends FunctionalTest {
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-
-
         Assert.assertEquals(400, response.getStatusCode());
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_NAME));
-
     }
 
     @Test
@@ -247,20 +225,13 @@ public class TalkTests extends FunctionalTest {
 
         Date date = new Date("", "");
 
-        System.out.println(date.toString());
-
         Talk talk = new Talk(eventId, date);
 
         response = given().header("Content-Type", "application/json")
                 .body(talk.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/talk");
 
-
-
         Assert.assertEquals(400, response.getStatusCode());
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_DATE));
-
     }
 
     @Test
@@ -426,8 +397,6 @@ public class TalkTests extends FunctionalTest {
         String newTitle = RandomStringUtils.randomAlphabetic(8);
         object.put("title", newTitle);
 
-
-        System.out.println(newTitle);
         response = given().header("Content-Type", "application/json")
                 .body(object.toString())
                 .cookie("connect.sid", userSessionCookie).patch("v1/talk/" + talkId);
@@ -457,8 +426,6 @@ public class TalkTests extends FunctionalTest {
         String newTitle = RandomStringUtils.randomAlphabetic(8);
         object.put("title", newTitle);
 
-
-        System.out.println(newTitle);
         response = given().header("Content-Type", "application/json")
                 .body(object.toString())
                 .cookie("connect.sid", speakerSessionCookie).patch("v1/talk/" + talkId);
@@ -483,12 +450,11 @@ public class TalkTests extends FunctionalTest {
         String talkId = jsonPath.get("_id");
 
         //patch
+
         JSONObject object = new JSONObject();
         String newTitle = RandomStringUtils.randomAlphabetic(8);
         object.put("title", newTitle);
 
-
-        System.out.println(newTitle);
         response = given().header("Content-Type", "application/json")
                 .body(object.toString())
                 .cookie("connect.sid", adminSessionCookie).patch("v1/talk/" + talkId);
@@ -524,8 +490,6 @@ public class TalkTests extends FunctionalTest {
         String newTitle = RandomStringUtils.randomAlphabetic(8);
         object.put("title", newTitle);
 
-
-        System.out.println(newTitle);
         response = given().header("Content-Type", "application/json")
                 .body(object.toString())
                 .cookie("connect.sid", superAdminSessionCookie).patch("v1/talk/" + talkId);
@@ -636,8 +600,4 @@ public class TalkTests extends FunctionalTest {
         response = given().cookie("connect.sid", superAdminSessionCookie).get("v1/talk/" + talkId);
         Assert.assertEquals(404, response.getStatusCode());
     }
-
-
-
-
 }

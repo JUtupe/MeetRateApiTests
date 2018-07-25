@@ -4,7 +4,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
-import pl.jutupe.enums.ErrorType;
 import pl.jutupe.enums.UserType;
 import pl.jutupe.object.Event;
 import pl.jutupe.object.Location;
@@ -47,15 +46,12 @@ public class ObjectLocationTests extends FunctionalTest{
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
         Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_LOCATION));
     }
 
     @Test
     public void testPostTooBigCityLocation() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String city = RandomStringUtils.randomAlphabetic(10000);
+        String city = RandomStringUtils.randomAlphabetic(101);
 
         Location location = new Location(city, validPlace, validLat, validLng);
 
@@ -66,15 +62,12 @@ public class ObjectLocationTests extends FunctionalTest{
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
         Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_LOCATION));
     }
 
     @Test
     public void testPostTooBigPlaceLocation() throws JSONException {
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
-        String place = RandomStringUtils.randomAlphabetic(10000);
+        String place = RandomStringUtils.randomAlphabetic(101);
 
         Location location = new Location(validCity, place, validLat, validLng);
 
@@ -85,9 +78,6 @@ public class ObjectLocationTests extends FunctionalTest{
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
         Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_LOCATION));
     }
 
     @Test
@@ -95,7 +85,7 @@ public class ObjectLocationTests extends FunctionalTest{
         String adminSessionCookie = createUserCookie(UserType.ADMIN);
         String city = RandomStringUtils.randomAlphabetic(10);
 
-        Location location = new Location(city + "123", validPlace, validLat, validLng);
+        Location location = new Location(city + " 123", validPlace, validLat, validLng);
 
         Event event = new Event(location);
 
@@ -103,10 +93,7 @@ public class ObjectLocationTests extends FunctionalTest{
                 .body(event.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
-        Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_LOCATION));
+        Assert.assertEquals(201, response.getStatusCode());
     }
 
     @Test
@@ -123,10 +110,7 @@ public class ObjectLocationTests extends FunctionalTest{
                 .body(event.toString())
                 .cookie("connect.sid", adminSessionCookie).post("v1/event");
 
-        Assert.assertEquals(400, response.getStatusCode());
-
-        ErrorChecker checker = new ErrorChecker(response.jsonPath());
-        Assert.assertTrue(checker.checkForError(ErrorType.INVALID_LOCATION));
+        Assert.assertEquals(201, response.getStatusCode());
     }
 
     @Test

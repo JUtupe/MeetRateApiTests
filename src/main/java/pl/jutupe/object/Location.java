@@ -12,7 +12,6 @@ public class Location {
 
     private JSONObject object;
 
-    //todo losowe
     public Location() throws JSONException {
         object = new JSONObject();
 
