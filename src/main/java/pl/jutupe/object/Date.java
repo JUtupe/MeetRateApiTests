@@ -9,12 +9,13 @@ public class Date {
     private JSONObject object;
 
     public Date() throws JSONException {
-        start = Long.toString((System.currentTimeMillis()/1000)+10000);
+        start = Long.toString((System.currentTimeMillis()/1000)+2);
         end = Long.toString((System.currentTimeMillis()/1000)+30000);
 
         object = new JSONObject();
         object.put("start", start);
         object.put("end", end);
+
     }
 
     public Date(String start, String end) throws JSONException {
