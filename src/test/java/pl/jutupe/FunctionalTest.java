@@ -26,7 +26,7 @@ public class FunctionalTest {
         //RestAssured.port = 80;
         RestAssured.port = 3000;
 
-        ADMIN_SESSION_COOKIE = given().header("email", "co@co.pl").header("password_hash", "$2b$10$7ZJiNXvnViGJoiJcxGzAAOiBi7lnUcsdKUG6pJ5m8VtzuFNTEj3P.")
+        ADMIN_SESSION_COOKIE = given().header("email", "co@co.pl").header("password_hash", "$2b$10$5NYolQ77qlRQVkjkhfKxM.VVpxO2998nqEtA7lcfQ0PklMqb5wWse")
                 .when().get("v1/login")
                 .then().extract().cookie("connect.sid");
     }
@@ -54,6 +54,12 @@ public class FunctionalTest {
         response = given().header("Content-Type", "application/json")
                 .body(event.toString())
                 .cookie("connect.sid", sessionCookie).post("v1/event");
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         return response.jsonPath();
     }
