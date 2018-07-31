@@ -19,16 +19,17 @@ public class FunctionalTest {
 
     @BeforeClass
     public static void setUp(){
-        //RestAssured.baseURI = "http://dev-vote.rst.com.pl/api/";
-        RestAssured.baseURI = "http://10.67.1.253/api/";
-        //RestAssured.baseURI = "http://127.0.0.1/api/";
-
-        //RestAssured.port = 80;
+        RestAssured.baseURI = "http://localhost/api/";
         RestAssured.port = 3000;
 
-        ADMIN_SESSION_COOKIE = given().header("email", "co@co.pl").header("password_hash", "$2b$10$5NYolQ77qlRQVkjkhfKxM.VVpxO2998nqEtA7lcfQ0PklMqb5wWse")
-                .when().get("v1/login")
-                .then().extract().cookie("connect.sid");
+        response = given()
+                .header("email", "co@co.pl")
+                .header("password_hash", "$2b$10$5NYolQ77qlRQVkjkhfKxM.VVpxO2998nqEtA7lcfQ0PklMqb5wWse")
+        .when().get("v1/login");
+
+        Assert.assertEquals(200, response.getStatusCode());
+
+        ADMIN_SESSION_COOKIE = response.cookie("connect.sid");
     }
 
     static String createUserCookie(UserType type) throws JSONException {
@@ -55,6 +56,8 @@ public class FunctionalTest {
                 .body(event.toString())
                 .cookie("connect.sid", sessionCookie).post("v1/event");
 
+        Assert.assertEquals(201, response.getStatusCode());
+
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -72,6 +75,7 @@ public class FunctionalTest {
         response = given().header("Content-Type", "application/json")
                 .body(talk.toString())
                 .cookie("connect.sid", sessionCookie).post("v1/talk");
+
         Assert.assertEquals(201, response.getStatusCode());
 
         return response.jsonPath();
